@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>USP Class X Science PYQ App · Admin</title>
+<style>
+:root{--n:#16305a;--g:#c9962a;--bg:#f6f3ec;--ok:#178a55;--bad:#c33}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:#1d2433}
+header{background:var(--n);color:#fff;border-bottom:4px solid var(--g);padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
+header h1{font:700 1.35rem Georgia,serif;margin:0}header button{background:none;border:1px solid #fff8;color:#fff;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer}
+main{max-width:1100px;margin:0 auto;padding:18px 16px 60px}
+h2{font:700 1.5rem Georgia,serif;color:var(--n);margin:18px 0 4px}.sub{color:#555;margin:0 0 12px}
+.box{background:#fff;border:1px solid #e6dfcf;border-radius:14px;padding:18px}
+.row{display:grid;grid-template-columns:2fr 1.4fr 1.2fr 1.1fr auto;gap:10px;align-items:end}
+label{display:block;font-weight:700;color:var(--n);font-size:.9rem;margin-bottom:5px}label small{font-weight:500;color:#777}
+input,textarea{width:100%;padding:10px 12px;border:1px solid #cfc6b4;border-radius:9px;font-size:1rem;font-family:inherit}
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:800;cursor:pointer;font-size:1rem}
+.gold{background:var(--g);color:#1d1d1d}.navy{background:var(--n);color:#fff}.wa{background:#25d366;color:#fff}.ghost{background:#fff;border:1px solid #bbb;color:#333}.red{background:#fff;border:1px solid var(--bad);color:var(--bad)}
+.sm{padding:6px 10px;font-size:.82rem;border-radius:8px}
+details{margin-top:12px}summary{cursor:pointer;font-weight:700;color:var(--n)}
+.res{margin-top:12px;display:grid;gap:8px}.ri{background:#fbf5e6;border:1px solid #ecd9a8;border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.ri .e{flex:1;min-width:200px}.ri .e b{display:block}.ri .e span{font-size:.85rem;color:#666}.ri .c{font:800 1.8rem Georgia,serif;letter-spacing:4px;color:var(--n);min-width:150px;text-align:center}
+.msg{margin-top:8px;font-weight:700}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}.tools input{max-width:300px}
+.stat{display:inline-block;background:#fff;border:1px solid #e6dfcf;border-radius:10px;padding:6px 12px;margin-right:6px;font-size:.9rem}.stat b{color:var(--n);font-size:1.1rem}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:.9rem}
+th{background:var(--n);color:#fff;text-align:left;padding:9px}td{padding:8px 9px;border-bottom:1px solid #eee;vertical-align:middle}
+td .acts{display:flex;gap:5px;flex-wrap:wrap}.pill{display:inline-block;border-radius:99px;padding:2px 9px;font-size:.78rem;font-weight:700}
+.on{background:#e3f5ea;color:var(--ok)}.off{background:#fde8e8;color:var(--bad)}.exp{background:#fff1d6;color:#9a6a00}.new{background:#eef2fb;color:var(--n)}
+code{font:700 1rem monospace;letter-spacing:2px}
+#login{max-width:380px;margin:80px auto}.hide{display:none}
+@media(max-width:800px){.row{grid-template-columns:1fr 1fr}.tbl{overflow-x:auto}}
+</style></head><body>
+<header><h1>USP Class X Science PYQ App · Admin</h1><button id="out" class="hide" onclick="sessionStorage.removeItem('ap');location.reload()">Sign out</button></header>
+<main>
+<div id="login" class="box"><h2 style="margin-top:0">Admin login</h2><p class="sub">Enter the admin password.</p>
+<input id="pw" type="password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><button class="btn navy" style="margin-top:10px;width:100%" onclick="login()">Sign in</button><div class="msg" id="lmsg"></div></div>
+
+<div id="app" class="hide">
+<h2>Give access</h2><p class="sub">Add the email a student gave after paying ₹99. Send them the activation code on WhatsApp.</p>
+<div class="box">
+ <div class="row">
+  <div><label>Email</label><input id="em" type="email" placeholder="student@gmail.com"></div>
+  <div><label>Name <small>(optional)</small></label><input id="nm"></div>
+  <div><label>Mobile <small>(optional)</small></label><input id="mb" inputmode="numeric"></div>
+  <div><label>Valid till</label><input id="vd" type="date" value="2027-03-31"></div>
+  <button class="btn gold" onclick="addOne()">Add and create code</button>
+ </div>
+ <details><summary>Add many emails at once</summary><p class="sub" style="margin-top:8px">One student per line: <code>email, name, mobile</code></p><textarea id="bulk" rows="5" placeholder="a@gmail.com, Riya, 9876543210"></textarea><button class="btn gold" style="margin-top:8px" onclick="addBulk()">Add all and create codes</button></details>
+ <div class="res" id="res"></div><div class="msg" id="amsg"></div>
+</div>
+
+<h2>Students</h2>
+<div class="tools"><input id="q" placeholder="Search email, name or mobile" oninput="render()"><button class="btn ghost sm" onclick="load()">↻ Refresh</button><span id="stats"></span></div>
+<div class="tbl"><table><thead><tr><th>Student</th><th>Code</th><th>Status</th><th>Valid till</th><th>Devices</th><th>Actions</th></tr></thead><tbody id="tb"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+</div>
+</main>
+<script>
+const APP_URL=location.origin+'/';
+let PW=sessionStorage.getItem('ap')||'',S=[];
+async function api(o){const r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'content-type':'application/json','x-admin-pass':PW},body:JSON.stringify(o)});const j=await r.json().catch(()=>({error:'Server error'}));if(r.status==401)throw new Error('Wrong password');if(j.error)throw new Error(j.error);return j}
+async function login(){PW=document.getElementById('pw').value||PW;const m=document.getElementById('lmsg');m.textContent='Checking…';
+ try{await api({action:'login'});sessionStorage.setItem('ap',PW);document.getElementById('login').classList.add('hide');document.getElementById('app').classList.remove('hide');document.getElementById('out').classList.remove('hide');load()}catch(e){m.style.color='#c33';m.textContent=e.message}}
+const today=()=>new Date().toISOString().slice(0,10);
+const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'';
+function waLink(s){const t=`Hello ${s.name||''}! 🎉\nYour USP PYQ App (Class X Science) full access is ready.\n\n👉 Open: ${APP_URL}\n📧 Email: ${s.email}\n🔑 Code: ${s.code}\n✅ Valid till: ${fmt(s.valid)}\n\nOpen any locked chapter, enter your email and code, and tap Unlock.\nDo not share your code (works on max 2 devices).\n– Unique Study Point, Indore`;
+ const m=(s.mobile||'').replace(/\D/g,'');return 'https://wa.me/'+(m?(m.length==10?'91'+m:m):'')+'?text='+encodeURIComponent(t)}
+function resItem(s){return `<div class="ri"><div class="e"><b>${s.email}</b><span>${s.name?s.name+' · ':''}Valid till ${fmt(s.valid)}${s.existed?' · already existed (same code)':''}</span></div><div class="c">${s.code}</div><button class="btn ghost sm" onclick="copy(this,'${s.code}')">Copy</button><a class="btn navy sm" target="_blank" href="${waLink(s)}" style="text-decoration:none">Send on WhatsApp</a></div>`}
+function copy(b,t){navigator.clipboard.writeText(t);b.textContent='Copied'}
+async function add(list){const m=document.getElementById('amsg');m.style.color='#555';m.textContent='Creating…';
+ try{const j=await api({action:'add',students:list});const ok=j.results.filter(r=>!r.error);document.getElementById('res').innerHTML=ok.map(resItem).join('')+j.results.filter(r=>r.error).map(r=>`<div class="ri" style="background:#fde8e8">${r.email||'(blank)'}: ${r.error}</div>`).join('');
+  m.style.color='#178a55';m.textContent=ok.length+' code'+(ok.length==1?'':'s')+' created. Send each code to the student.';load()}catch(e){m.style.color='#c33';m.textContent=e.message}}
+function addOne(){const v=id=>document.getElementById(id).value.trim();if(!v('em'))return;add([{email:v('em'),name:v('nm'),mobile:v('mb'),valid:v('vd')}]);['em','nm','mb'].forEach(i=>document.getElementById(i).value='')}
+function addBulk(){const vd=document.getElementById('vd').value;const L=document.getElementById('bulk').value.split('\n').map(l=>l.split(',').map(x=>x.trim())).filter(a=>a[0]).map(a=>({email:a[0],name:a[1]||'',mobile:a[2]||'',valid:vd}));if(L.length)add(L)}
+async function load(){try{const j=await api({action:'list'});S=j.students;render()}catch(e){document.getElementById('tb').innerHTML=`<tr><td colspan=6>${e.message}</td></tr>`}}
+function status(s){if(s.revoked)return '<span class="pill off">Stopped</span>';if(s.valid&&s.valid<today())return '<span class="pill exp">Expired</span>';return s.activated?'<span class="pill on">Active</span>':'<span class="pill new">Not activated</span>'}
+function render(){const q=document.getElementById('q').value.toLowerCase();const L=S.filter(s=>(s.email+' '+(s.name||'')+' '+(s.mobile||'')).toLowerCase().includes(q));
+ const act=S.filter(s=>s.activated&&!s.revoked).length;document.getElementById('stats').innerHTML=`<span class="stat"><b>${S.length}</b> students</span><span class="stat"><b>${act}</b> activated</span><span class="stat"><b>₹${(S.length*99).toLocaleString('en-IN')}</b> @ ₹99</span>`;
+ document.getElementById('tb').innerHTML=L.map(s=>`<tr><td><b>${s.email}</b><br><small>${s.name||''} ${s.mobile||''}</small></td><td><code>${s.code}</code></td><td>${status(s)}</td><td>${fmt(s.valid)}</td><td>${(s.devices||[]).length}/2</td>
+ <td><div class="acts"><a class="btn wa sm" target="_blank" href="${waLink(s)}" style="text-decoration:none">WhatsApp</a>${s.revoked?`<button class="btn ghost sm" onclick="act('restore','${s.email}')">Restore</button>`:`<button class="btn red sm" onclick="if(confirm('Stop access for ${s.email}?'))act('revoke','${s.email}')">Stop</button>`}
+ <button class="btn ghost sm" onclick="act('resetDevices','${s.email}')" title="Allow on new phone">Reset devices</button><button class="btn ghost sm" onclick="ext('${s.email}')">Extend</button><button class="btn ghost sm" onclick="if(confirm('Give a NEW code to ${s.email}? Old code will stop working.'))act('newCode','${s.email}')">New code</button></div></td></tr>`).join('')||'<tr><td colspan=6>No students yet.</td></tr>'}
+async function act(a,email,extra){try{await api(Object.assign({action:a,email},extra||{}));load()}catch(e){alert(e.message)}}
+function ext(email){const v=prompt('New valid-till date (YYYY-MM-DD)','2027-03-31');if(v&&/^\d{4}-\d\d-\d\d$/.test(v))act('extend',email,{valid:v})}
+if(PW)login();
+</script></body></html>
